@@ -1,0 +1,27 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosansjp.css);
+
+h4 {
+    font-family: 'Noto Sans JP';
+}
+
+.jumbotron-image {
+    background-position: right right;
+    background-repeat:unset;
+    background-size: cover;
+}
+
+input:invalid {
+    border: solid 1px red;
+}
+
+:root {
+    --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
+}
+  
+.card {
+    background: #222;
+    border: 1px solid #dd2476;
+    color: rgba(250, 250, 250, 0.8);
+    margin-bottom: 2rem;
+}
+/* Modal */
