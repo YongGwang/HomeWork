@@ -13,7 +13,7 @@
   </head>
   <body>
     <%- include('nav.ejs') %>
-    <div class="card">
+    <div class="card mt-sm-2">
       <div class="card-body"> <a class="text-white bg-dark"><%= user.id%></a> さんがログインされています。
         <form action="/logout">
           <button type="submit" class="input-group-append btn btn-danger" id="logout">LogOut</button>
@@ -23,9 +23,13 @@
 
     <div class="container mt-4">
       <h4 class="text-center">This is SearchResult page.</h4>
+      <div class="card">
+        <div class="card-body text-center"> <a class="text-white bg-dark">管理者のアカウントは全てのポストを削除可能。</a></div>
+      </div>
       <div class="container input-group mb-2">
         <input class="form-control" id="input-search">
         <button class="input-group-append btn btn-danger" id="search">search</button>
+      </div>
     </div>
 
     <div>
@@ -75,6 +79,7 @@
           pushedBtn.parent('li').fadeOut();
         }).fail(function(xhr, textStatus, errorThrown){
           console.log(xhr, textStatus, errorThrow);
+          alert(result)
           //Loginしないとpostをdeleteできない。
           //作成者じゃないとpostをdeleteできない。
         });
