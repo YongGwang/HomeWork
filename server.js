@@ -4,6 +4,9 @@ const app = express();
 //port-------------------------------------
 const port = 8080
 //-----------------------------------------
+//security---------------------------------
+const sanitizeHtml = require('sanitize-html');
+//-----------------------------------------
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 require('dotenv').config();
@@ -157,7 +160,7 @@ app.get('/write', nocache, AYLogin, function(req, response){
 //--------------------------------------------------------------------------------
 
 //リストアップページへ移動----------------------------------------------------------
-app.get('/list', nocache, AYLogin, function(req, response){
+app.get('/list', AYLogin, function(req, response){
 
     db.collection('post').find().toArray(function(error, result){
         if(error) return console.log(error)
@@ -168,22 +171,12 @@ app.get('/list', nocache, AYLogin, function(req, response){
 //--------------------------------------------------------------------------------
 
 //検索----------------------------------------------------------------------------
-app.get('/search', nocache, (req, response) => {
-    console.log(req.query)
-
-    var searchRequirement = [
-        {
-          $search: {
-            index: 'productSearch',
-            text: {
-              query: req.query.value,
-              path: 'ProductName'  // If you search 2 sctions ['ProductName', 'ProductInfo']
-            }
-          }
-        }
-    ]
-
-    db.collection('post').aggregate(searchRequirement).toArray((error, result) => {
+app.get('/search', (req, response) => {
+    console.log(req.query.value)
+    req.query.value = sanitizeHtml(req.query.value)
+    console.log(req.query.value)
+    
+    db.collection('post').find({ 'ProductName': {'$regex': req.query.value, '$options': 'i' }}).toArray((error, result) => {
         console.log(result)
         response.render('search.ejs', {posts : result, user : req.user})
     })
