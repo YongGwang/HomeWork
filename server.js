@@ -57,14 +57,14 @@ MongoClient.connect("mongodb+srv://thdwo123:dyd123@cluster0.xylcy.mongodb.net/my
     })
 
     //post追加
-    app.post('/add', nocache, IsPostBlank, function(req, response){
+    app.post('/add', IsPostBlank, nocache, function(req, response){
         //response.send('send Over');
         db.collection('counter').findOne({name: 'postNumber'}, function(error, result){
             if(error) return console.log(error)
             //console.log(result.totalPost);
             var totalPostNum = parseInt(result.totalPost);
             var productStock = parseInt(req.body.Stock);
-            var post = { _id: totalPostNum + 1, writer: req.user.id, writerCode: req.user._id, ProductName: req.body.ProductName, ProductInfo: req.body.Info,  Stock: productStock }
+            var post = { _id: totalPostNum + 1, writer: req.user.id, writerCode: req.user._id, ProductName: req.body.ProductName, ProductInfo: req.body.ProductInfo,  Stock: productStock }
 
             db.collection('post').insertOne( post, function(error, result){
                 console.log('DBsave is Over')
@@ -74,7 +74,7 @@ MongoClient.connect("mongodb+srv://thdwo123:dyd123@cluster0.xylcy.mongodb.net/my
                 })
             });
         });
-
+        
         response.redirect('/list')
     });
 });
@@ -104,7 +104,7 @@ app.post('/login', passport.authenticate('local', {
 }), function(req, response){
     console.log(req.user);
 
-    response.redirect('/list')
+    response.redirect('/')
 });
 
 //session
@@ -161,7 +161,6 @@ app.get('/write', nocache, AYLogin, function(req, response){
 
 //リストアップページへ移動----------------------------------------------------------
 app.get('/list', AYLogin, function(req, response){
-
     db.collection('post').find().toArray(function(error, result){
         if(error) return console.log(error)
         //console.log(result);
@@ -170,21 +169,8 @@ app.get('/list', AYLogin, function(req, response){
 });
 //--------------------------------------------------------------------------------
 
-//検索----------------------------------------------------------------------------
-app.get('/search', (req, response) => {
-    console.log(req.query.value)
-    req.query.value = sanitizeHtml(req.query.value)
-    console.log(req.query.value)
-    
-    db.collection('post').find({ 'ProductName': {'$regex': req.query.value, '$options': 'i' }}).toArray((error, result) => {
-        console.log(result)
-        response.render('search.ejs', {posts : result, user : req.user})
-    })
-});
-//----------------------------------------------------------------------------------
-
 //削除------------------------------------------------------------------------------
-app.delete('/delete', nocache, AYWriter, function(req, response){
+app.delete('/delete', AYWriter, nocache, function(req, response){
     console.log('Request to delete');
     // console.log(req.body.postData._id);
 
@@ -201,15 +187,15 @@ app.delete('/delete', nocache, AYWriter, function(req, response){
         if(error) { return console.log(error) }
         console.log('delete is Over')
         if(result) {console.log(result)}
+
         response.status(200).send({ message: '削除成功' });
     })
 });
 //-----------------------------------------------------------------------------------
 
-
 //修正------------------------------------------------------------------------------
 app.put('/edit', nocache, IsPostBlank, function(req, response){
-    db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set : { ProductName: req.body.ProductName, Info: req.body.ProductInfo, Stock: req.body.Stock }}, function(error, result){
+    db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set : { ProductName: req.body.ProductName, ProductInfo: req.body.ProductInfo, Stock: req.body.Stock }}, function(error, result){
         if(error) return console.log(error)
         console.log('修正完了')
         //response.status(200).send('修正成功');
@@ -223,13 +209,31 @@ app.get('/edit/:id', nocache, function(req, response){
     db.collection('post').findOne({_id : parseInt(req.params.id)}, function(error, result){
         if(error) { return console.log(error) }
 
-        console.log(req.params)
-
-        response.render('edit.ejs', {post : result} );
+        var tempPostCode = result.writerCode.toString()
+        var tempUserCode = req.user._id.toString()
+        console.log(tempPostCode)
+        console.log(tempUserCode)
+        if(tempPostCode == req.user._id){
+            response.render('edit.ejs', {post : result});
+        } else {
+            response.send("<script>alert('あなたが作成した文書ではありません。'); window.location.replace('/list')</script>;");
+        }
     })
 });
 //----------------------------------------------------------------------------------
 
+//検索----------------------------------------------------------------------------
+app.get('/search', nocache, (req, response) => {
+    console.log(req.query.value)
+    req.query.value = sanitizeHtml(req.query.value)
+    console.log(req.query.value)
+    
+    db.collection('post').find({ 'ProductName': {'$regex': req.query.value, '$options': 'i' }}).toArray((error, result) => {
+        console.log(result)
+        response.render('search.ejs', {posts : result, user : req.user})
+    })
+});
+//----------------------------------------------------------------------------------
 
 //MiddleWare------------------------------------------------------------------------
 //Confirm Login: middleWare
@@ -237,34 +241,36 @@ function AYLogin(req, response, next){
     if(req.user){
         next()
     } else {
-        response.send('You are not logged in. please getting back!')
+        response.send("<script>alert('You are not logged in. please Log in!'); window.location.replace('/login')</script>;");
+        //response.send('You are not logged in. please getting back!')
     }
 }
 
 //Confirm Writer: middleWare
 function AYWriter(req, response, next){
-    var tempUserCode = req.user._id.toString()
-    var tempPostCode = req.body.postData.wcode.toString()
+    
+    var tempUserCode = String(req.user._id)
+    var tempPostCode = String(req.body.postData.wcode)
     //console.log(tempUserCode)
     //console.log(tempPostCode)
 
     if(tempUserCode == tempPostCode || req.user.admin == true){
         next()
     } else {
-        response.status(400).send('あなたが作成した文書ではありません。');
+        response.status(400).send('あなたが作成した文書ではありません。')
     }
 };
 
-//Confirm Post Input Blank
+//Confirm Post Input Blank: middleWare
 function IsPostBlank(req, response, next){
-
     console.log(req.body)
     var textPName = req.body.ProductName
-    var textPInfo = req.body.Info
+    var textPInfo = req.body.ProductInfo
     var PStock = parseInt(req.body.Stock)
 
     if(textPName === '' || textPInfo === '' || isNaN(PStock)){
-        response.status(400).send('ポストに空欄があります。');
+        response.send("<script>alert('ポストに空欄があります。');</script>");
+        //response.status(400).send('ポストに空欄があります。');
     }else {
         next()
     }

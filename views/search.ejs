@@ -22,7 +22,7 @@
     </div>
 
     <div class="container mt-4">
-      <h4 class="text-center">This is SearchResult page.</h4>
+      <h4 class="text-center text-danger">This is SearchResult page.</h4>
       <div class="card">
         <div class="card-body text-center"> <a class="text-white bg-dark">管理者のアカウントは全てのポストを削除可能。</a></div>
       </div>
@@ -31,18 +31,18 @@
         <button class="input-group-append btn btn-danger" id="search">search</button>
       </div>
 
-      
       <ul class="list-group">
         <%for (var i = 0; i < posts.length; i++) { %>
           <li class="list-group-item">
-            <h><div class="card-body"> <b class="text-white bg-dark">postNumber :</b> <%=posts[i]._id %></div> </h>
+            <h><div class="card-body"> <b class="text-white bg-dark">postNo</b>. <%=posts[i]._id %></div> </h>
             <h4><div class="card-body"> <b class="text-white bg-dark">ProductName :</b> <%= posts[i].ProductName%></div></h4>
-            <p><div class="card-body"> <b class="text-white bg-dark">Info :</b> <%= posts[i].ProductInfo%></div></p>
+            <div class="card-body"> <b class="text-white bg-dark">Info :</b> <%= posts[i].ProductInfo%></div>
             <div class="card-body"> <b class="text-white bg-dark">Stock :</b> <%= posts[i].Stock%></div>
-            <button class="btn btn-danger delete" data-id="<%= posts[i]._id %>">Delete</button>
-            <button class="btn btn-success edit" data-id="<%= posts[i]._id %>">Edit</button>
+            <button class="btn btn-danger delete" data-_id="<%= posts[i]._id %>" data-wCode="<%= posts[i].writerCode %>">Delete</button>
+            <button class="btn btn-success edit" data-_id="<%= posts[i]._id %>" data-wCode="<%= posts[i].writerCode %>">Edit</button>
             <h6 class="float-right"><span class="badge badge-secondary">作成者</span><%= posts[i].writer %> </h6>
           </li>
+          <p>
         <% } %>
       </ul>
     </div>
@@ -59,28 +59,27 @@
     <!-- AJAX -->
     <script>
       $('.edit').click(function(e){
-        var postNumber = e.target.dataset.id;
+        var postNumber = e.target.dataset._id;
         var pushedBtn = $(this);
-
+        
         window.location.replace('/edit/' + postNumber)
       })
 
       $('.delete').click(function(e){
-        var postNumber = e.target.dataset.id;
+        var postData = e.target.dataset;
         var pushedBtn = $(this);
-
+        
         $.ajax({
-          method : 'DELETE',
-          url : '/delete',
-          data : { _id : postNumber}
+            method : 'DELETE',
+            url : '/delete',
+            data : { postData : postData }  
         }).done(function(result){
-          console.log('削除に成功しました。');
-          pushedBtn.parent('li').fadeOut();
+            pushedBtn.parent('li').fadeOut();
         }).fail(function(xhr, textStatus, errorThrown){
-          console.log(xhr, textStatus, errorThrow);
-          alert(result)
-          //Loginしないとpostをdeleteできない。
-          //作成者じゃないとpostをdeleteできない。
+            alert('あなたが作成した文書ではありません。');
+            console.log(xhr, textStatus, errorThrow);
+            //Loginしないとpostをdeleteできない。
+            //作成者じゃないとpostをdeleteできない。
         });
       })
     </script>
