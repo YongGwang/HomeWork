@@ -13,6 +13,17 @@
   </head>
   <body>
     <%- include('nav.ejs')%>
+    <script>
+      if(user.id){
+      <div class="card">
+        <div class="card-body"> <a class="text-white bg-dark">user.id</a> さんがログインされています。
+          <form action="/logout">
+            <button type="submit" class="input-group-append btn btn-danger" id="logout">LogOut</button>
+          </form>
+        </div>
+      </div>
+      }
+    </script>
 
     <div class="jumbotron">
       <h1 class="display-4">One that will warm your heart!!</h1>
@@ -29,10 +40,10 @@
         <%for (var i = 0; i < posts.length; i++) { %>
           <li class="list-group-item">
             <img src="./image/bearSweater3.jpg" class="card-img-top" alt="...">
-            <h><div class="card-body"> <b class="text-white bg-dark">postNo</b>. <%=posts[i]._id %></div> </h>
-            <h4><div class="card-body"> <b class="text-white bg-dark">ProductName :</b> <%= posts[i].ProductName%></div></h4>
-            <h5 class="card-body"> <b class="text-white bg-dark">Info :</b> <%= posts[i].ProductInfo%></h5>
-            <div class="card-body"> <b class="text-white bg-dark">Stock :</b> <%= posts[i].Stock%></div>
+            <h><div class="card-body"> <b class="text-white bg-dark">No.</b> <%=posts[i]._id %></div> </h>
+            <h2><div class="card-title"> <%= posts[i].ProductName%></div></h2>
+            <blockquote class="card-body text"> <%= posts[i].ProductInfo%></blockquote>
+            <div class="card-body"> <b class="text-white bg-dark">Stock: </b><%= posts[i].Stock%></div>
             <h6 class="float-right"><span class="badge badge-secondary">作成者</span><%= posts[i].writer %> </h6>
           </li>
         </p>

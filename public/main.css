@@ -1,6 +1,5 @@
 @import url(http://fonts.googleapis.com/earlyaccess/notosansjp.css);
 
-import alert from 'alert'
 
 h4 {
     font-family: 'Noto Sans JP';
@@ -26,4 +25,9 @@ input:invalid {
     color: rgba(250, 250, 250, 0.8);
     margin-bottom: 2rem;
 }
+
+.text {
+    word-break: break-all;
+}
+
 /* Modal */

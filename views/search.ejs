@@ -23,21 +23,19 @@
 
     <div class="container mt-4">
       <h4 class="text-center text-danger">This is SearchResult page.</h4>
-      <div class="card">
-        <div class="card-body text-center"> <a class="text-white bg-dark">管理者のアカウントは全てのポストを削除可能。</a></div>
-      </div>
+      <div class="alert alert-primary" role="alert">管理者のアカウントは全てのポストを削除可能。</div>
       <div class="container input-group mb-2">
-        <input class="form-control" id="input-search">
+        <input class="form-control" maxlength="16" id="input-search">
         <button class="input-group-append btn btn-danger" id="search">search</button>
       </div>
 
       <ul class="list-group">
         <%for (var i = 0; i < posts.length; i++) { %>
           <li class="list-group-item">
-            <h><div class="card-body"> <b class="text-white bg-dark">postNo</b>. <%=posts[i]._id %></div> </h>
-            <h4><div class="card-body"> <b class="text-white bg-dark">ProductName :</b> <%= posts[i].ProductName%></div></h4>
-            <div class="card-body"> <b class="text-white bg-dark">Info :</b> <%= posts[i].ProductInfo%></div>
-            <div class="card-body"> <b class="text-white bg-dark">Stock :</b> <%= posts[i].Stock%></div>
+            <h><div class="card-body"> <b class="text-white bg-dark">No.</b> <%=posts[i]._id %></div> </h>
+            <h2><div class="card-title"> <%= posts[i].ProductName%></div></h2>
+            <div class="card-body text"> <%= posts[i].ProductInfo%></div>
+            <div class="card-body"> <b class="text-white bg-dark">Stock: </b><%= posts[i].Stock%></div>
             <button class="btn btn-danger delete" data-_id="<%= posts[i]._id %>" data-wCode="<%= posts[i].writerCode %>">Delete</button>
             <button class="btn btn-success edit" data-_id="<%= posts[i]._id %>" data-wCode="<%= posts[i].writerCode %>">Edit</button>
             <h6 class="float-right"><span class="badge badge-secondary">作成者</span><%= posts[i].writer %> </h6>

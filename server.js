@@ -4,7 +4,6 @@ const app = express();
 //port-------------------------------------
 const port = 8080
 //-----------------------------------------
-//security---------------------------------
 const sanitizeHtml = require('sanitize-html');
 //-----------------------------------------
 const bodyParser = require('body-parser');
@@ -57,13 +56,22 @@ MongoClient.connect("mongodb+srv://thdwo123:dyd123@cluster0.xylcy.mongodb.net/my
     })
 
     //post追加
-    app.post('/add', IsPostBlank, nocache, function(req, response){
+    app.post('/add', IsPostBlank, function(req, response){
         //response.send('send Over');
         db.collection('counter').findOne({name: 'postNumber'}, function(error, result){
             if(error) return console.log(error)
             //console.log(result.totalPost);
             var totalPostNum = parseInt(result.totalPost);
             var productStock = parseInt(req.body.Stock);
+
+            //HardCoding-Post Characters Limit---------------------------------------
+            //ProductName 30, ProductInfo 240, Stock <= 50
+            req.body.ProductName = req.body.ProductName.substr(0,30)
+            req.body.ProductInfo = req.body.ProductInfo.substr(0,240)
+            if(req.body.Stock >= 51) {
+                req.body.Stock = 50
+            }
+            //-----------------------------------------------------------------------
             var post = { _id: totalPostNum + 1, writer: req.user.id, writerCode: req.user._id, ProductName: req.body.ProductName, ProductInfo: req.body.ProductInfo,  Stock: productStock }
 
             db.collection('post').insertOne( post, function(error, result){
@@ -95,7 +103,7 @@ app.get('/logout', nocache, function(req, response) {
     response.redirect('/');
 });
 
-app.get('/login', nocache, function(req, response){
+app.get('/login', IsLoggedIn, function(req, response){
     response.render('login.ejs', {user: req.user})
 });
 
@@ -195,8 +203,22 @@ app.delete('/delete', AYWriter, nocache, function(req, response){
 
 //修正------------------------------------------------------------------------------
 app.put('/edit', nocache, IsPostBlank, function(req, response){
+
+    //HardCoding-Post Characters Limit---------------------------------------
+    //ProductName 30, ProductInfo 240, Stock <= 50
+    req.body.ProductName = req.body.ProductName.substr(0,30)
+    req.body.ProductInfo = req.body.ProductInfo.substr(0,240)
+    if(req.body.Stock >= 51) {
+        req.body.Stock = 50
+    }
+    //-----------------------------------------------------------------------
+
     db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set : { ProductName: req.body.ProductName, ProductInfo: req.body.ProductInfo, Stock: req.body.Stock }}, function(error, result){
         if(error) return console.log(error)
+        if(req.body === NaN){
+            response.send("<script>alert('このポストはもう存在しません。'); window.location.replace('/list')</script>;");
+        }
+
         console.log('修正完了')
         //response.status(200).send('修正成功');
         response.redirect('/list')
@@ -269,9 +291,17 @@ function IsPostBlank(req, response, next){
     var PStock = parseInt(req.body.Stock)
 
     if(textPName === '' || textPInfo === '' || isNaN(PStock)){
-        response.send("<script>alert('ポストに空欄があります。');</script>");
-        //response.status(400).send('ポストに空欄があります。');
+        response.send("<script>alert('ポストに空欄があります。'); history.go(-1);</script>");
     }else {
+        next()
+    }
+}
+
+//Confirm logged In
+function IsLoggedIn(req, response, next) {
+    if(req.user){
+        response.render('loggingin.ejs', {user: req.user})
+    } else {
         next()
     }
 }
@@ -285,7 +315,6 @@ function nocache(req, response, next) {
     next();
 }
 //----------------------------------------------------------------------------------
-
 
 //※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※※
 //未実装----------------------------------------------------------------------------
