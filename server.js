@@ -28,21 +28,24 @@ MongoClient.connect("mongodb+srv://thdwo123:dyd123@cluster0.xylcy.mongodb.net/my
     });
 
     //アカウントをデーターベースに登録
-    app.post('/register', nocache, function(req, response){
+    app.post('/register', function(req, response){
 
         var textID = req.body.id
         var textPW = req.body.pw
 
         //ID,PW文字数制限
         if(textID.length < 6 || textID.length > 16){
-            response.status(400).send('IDの文字数が6未満か16を超過しています。')
+            //response.status(400).send('IDの文字数が6未満か16を超過しています。')
+            response.send("<script>alert('IDの文字数が6未満か16を超過しています。'); window.location.replace('/login')</script>;"); 
         }else if(textPW.length < 6 || textPW.length > 16) {
-            response.status(400).send('PWの文字数が6未満か16を超過しています。')
+            //response.status(400).send('PWの文字数が6未満か16を超過しています。')
+            response.send("<script>alert('PWの文字数が6未満か16を超過しています。'); window.location.replace('/login')</script>;"); 
         }else {
             db.collection('login').findOne({id:req.body.id},function(error,result){
                 //同じIDがあるか判定
                 if(result != null){ 
-                    response.status(400).send('同じIDが存在しています。')
+                    //response.status(400).send('同じIDが存在しています。')
+                    response.send("<script>alert('同じIDが存在しています。'); window.location.replace('/login')</script>;"); 
                 } else{
                     console.log('生成可能なIDです。')
                     var tempIsAdmin = false;
@@ -56,7 +59,7 @@ MongoClient.connect("mongodb+srv://thdwo123:dyd123@cluster0.xylcy.mongodb.net/my
     })
 
     //post追加
-    app.post('/add', IsPostBlank, function(req, response){
+    app.post('/add', nocache, IsPostBlank, function(req, response){
         //response.send('send Over');
         db.collection('counter').findOne({name: 'postNumber'}, function(error, result){
             if(error) return console.log(error)
@@ -97,7 +100,7 @@ app.use(session({secret: 'password', resave: true, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/logout', nocache, function(req, response) {
+app.get('/logout', function(req, response) {
     console.log(req.user.id + ' さんがLogOutしました。')
     response.clearCookie('connect.sid');
     response.redirect('/');
@@ -151,7 +154,7 @@ passport.deserializeUser(function(userID, done){
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 
 //Homeへ移動----------------------------------------------------------------------
-app.get('/', nocache, function(req, response){
+app.get('/', function(req, response){
     db.collection('post').find().toArray(function(error, result){
         if(error) return console.log(error)
         //console.log(result);
@@ -178,7 +181,7 @@ app.get('/list', AYLogin, function(req, response){
 //--------------------------------------------------------------------------------
 
 //削除------------------------------------------------------------------------------
-app.delete('/delete', AYWriter, nocache, function(req, response){
+app.delete('/delete', AYWriter, function(req, response){
     console.log('Request to delete');
     // console.log(req.body.postData._id);
 
@@ -193,16 +196,18 @@ app.delete('/delete', AYWriter, nocache, function(req, response){
 
     db.collection('post').deleteOne(toData, function(error, result){
         if(error) { return console.log(error) }
-        console.log('delete is Over')
         if(result) {console.log(result)}
 
+        //response.send("<script>alert('削除成功。'); window.location.replace('/list')</script>;"); 
+
+        console.log('delete is Over')
         response.status(200).send({ message: '削除成功' });
     })
 });
 //-----------------------------------------------------------------------------------
 
 //修正------------------------------------------------------------------------------
-app.put('/edit', nocache, IsPostBlank, function(req, response){
+app.put('/edit', IsPostBlank, function(req, response){
 
     //HardCoding-Post Characters Limit---------------------------------------
     //ProductName 30, ProductInfo 240, Stock <= 50
@@ -215,13 +220,17 @@ app.put('/edit', nocache, IsPostBlank, function(req, response){
 
     db.collection('post').updateOne({ _id: parseInt(req.body.id) }, { $set : { ProductName: req.body.ProductName, ProductInfo: req.body.ProductInfo, Stock: req.body.Stock }}, function(error, result){
         if(error) return console.log(error)
-        if(req.body === NaN){
-            response.send("<script>alert('このポストはもう存在しません。'); window.location.replace('/list')</script>;");
-        }
 
-        console.log('修正完了')
-        //response.status(200).send('修正成功');
-        response.redirect('/list')
+        db.collection('post').findOne({_id : parseInt(req.body.id)}, function(error, result){
+            if(error) { return console.log(error) }
+            
+            if(result === null){
+                response.send("<script>alert('このポストはもう存在しません。'); window.location.replace('/list')</script>;"); 
+            }else{
+                //console.log('修正完了')
+                response.send("<script>alert('修正完了。'); window.location.replace('/list')</script>;"); 
+            }
+        })
     })
 });
 

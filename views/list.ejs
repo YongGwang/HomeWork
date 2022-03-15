@@ -72,6 +72,7 @@
             url : '/delete',
             data : { postData : postData }  
         }).done(function(result){
+            alert('削除完了。');
             pushedBtn.parent('li').fadeOut();
         }).fail(function(xhr, textStatus, errorThrown){
             alert('あなたが作成した文書ではありません。');

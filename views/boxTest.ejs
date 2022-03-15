@@ -13,17 +13,6 @@
   </head>
   <body>
     <%- include('nav.ejs')%>
-    <script>
-      if(user.id){
-      <div class="card">
-        <div class="card-body"> <a class="text-white bg-dark">user.id</a> さんがログインされています。
-          <form action="/logout">
-            <button type="submit" class="input-group-append btn btn-danger" id="logout">LogOut</button>
-          </form>
-        </div>
-      </div>
-      }
-    </script>
 
     <div class="jumbotron">
       <h1 class="display-4">One that will warm your heart!!</h1>
@@ -50,9 +39,6 @@
         <% } %>
       </ul>
     </div>
-
-
-    
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
