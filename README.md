@@ -11,5 +11,8 @@
 ### ポスト作成、削除、編集：基本、データーベースで作成者、管理者を区分できるように構成する。
 ### 検索：基本
 
-**For more information, see this**
-### (https://github.com/YongGwang/HomeWork/blob/master/server.js).
+
+
+
+#### **For more information, see this**
+#### (https://github.com/YongGwang/HomeWork/blob/master/server.js).
