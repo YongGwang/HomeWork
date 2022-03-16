@@ -1,12 +1,10 @@
 # MARKDOWN
-node.js + express + mongoDBを利用してポスト作成ホームページ制作 for README.md
+ポスト作成ホームページ制作 for README.md
 
-# 1. 제목(글머리) 작성
-# H1 제목  
-For more information, see the [contributor guide index]
+# 1.環境
+# H1　node.js + express + mongoDB(noSQL)
 
 
-    
 # 3. 번호 있는 리스트 작성
 1. 리스트1
 2. 리스트2
