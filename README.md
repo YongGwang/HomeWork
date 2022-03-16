@@ -1,14 +1,19 @@
 # MARKDOWN
-ポスト作成ホームページ制作 for README.md
+ポスト作成ホームページ制作() for README.md
 
 # 1.環境
 ## node.js + express + mongoDB(noSQL)
 
 
-# 3. 번호 있는 리스트 작성
-1. 리스트1
-2. 리스트2
-3. 리스트3 
+# 2.概要、目標
+##ログインシステム：「mongoDB」を使用してデーターベースを構築。
+##サーバー：サーバーの処理とフロントの処理を分けて構成する。
+##ポスト作成、削除、編集：基本、データーベースで作成者、管理者を区分できるように構成する。
+##検索：基本
+
+**For more information, see the [contributor guide index]**
+(https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md).
+
 
 # 4. 이텔릭체(기울어진 글씨) 작성
 *텍스트*
