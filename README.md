@@ -1,5 +1,5 @@
 # MARKDOWN
-ポスト作成ホームページ制作() for README.md
+ポスト作成ホームページ制作 for README.md
 
 # 1.環境
 ## node.js + express + mongoDB(noSQL)
