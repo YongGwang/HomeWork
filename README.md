@@ -14,5 +14,4 @@
 
 
 
-#### **For more information, see this**
-#### (https://github.com/YongGwang/HomeWork/blob/master/server.js).
+#### **For more information, see this** (https://github.com/YongGwang/HomeWork/blob/master/server.js).
