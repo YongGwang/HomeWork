@@ -6,10 +6,10 @@
 
 
 # 2.概要、目標
-## ログインシステム：「mongoDB」を使用してデーターベースを構築。
-## サーバー：サーバーの処理とフロントの処理を分けて構成する。
-## ポスト作成、削除、編集：基本、データーベースで作成者、管理者を区分できるように構成する。
-## 検索：基本
+### ログインシステム：「mongoDB」を使用してデーターベースを構築。
+### サーバー：サーバーの処理とフロントの処理を分けて構成する。
+### ポスト作成、削除、編集：基本、データーベースで作成者、管理者を区分できるように構成する。
+### 検索：基本
 
 **For more information, see the [contributor guide index]**
 (https://github.com/Azure/azure-content/blob/master/contributor-guide/contributor-guide-index.md).
