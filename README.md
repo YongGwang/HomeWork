@@ -2,7 +2,7 @@
 ポスト作成ホームページ制作 for README.md
 
 # 1.環境
-# H1　node.js + express + mongoDB(noSQL)
+## node.js + express + mongoDB(noSQL)
 
 
 # 3. 번호 있는 리스트 작성
