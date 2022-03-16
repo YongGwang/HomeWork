@@ -1,7 +1,7 @@
 # ポスト作成ホームページ制作
 
 ## 1.環境
-### Visual Studio Code 1.65: node.js + express + mongoDB(noSQL)
+### **Visual Studio Code 1.65**: node.js + express + mongoDB(noSQL)
 
 
 ## 2.概要、目標
