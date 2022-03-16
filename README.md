@@ -1,11 +1,10 @@
-# MARKDOWN
-ポスト作成ホームページ制作 for README.md
+# ポスト作成ホームページ制作
 
-# 1.環境
-## node.js + express + mongoDB(noSQL)
+## 1.環境
+### Visual Studio Code 1.65: node.js + express + mongoDB(noSQL)
 
 
-# 2.概要、目標
+## 2.概要、目標
 ### ログインシステム：「mongoDB」を使用してデーターベースを構築。
 ### サーバー：サーバーの処理とフロントの処理を分けて構成する。
 ### ポスト作成、削除、編集：基本、データーベースで作成者、管理者を区分できるように構成する。
